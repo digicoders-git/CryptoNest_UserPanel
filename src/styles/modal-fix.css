@@ -1,0 +1,22 @@
+w3m-modal {
+  display: none !important;
+}
+
+.swal-scrollable {
+  max-height: 60vh;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+
+.swal-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.swal-scrollable::-webkit-scrollbar-thumb {
+  background: #0f7a4a;
+  border-radius: 3px;
+}
+
+.swal-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}

@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "./styles/modal-fix.css";
+
+body {
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix scroll lock issues */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow: auto !important;
+  height: auto !important;
+  position: static !important;
+}
+
+#root {
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 100vh;
+}
+
+/* Prevent any modal or overlay from locking scroll */
+.swal2-container,
+.swal2-popup {
+  overflow: auto !important;
+}
+
+/* Ensure wallet modal doesn't lock scroll */
+w3m-modal,
+w3m-router-container {
+  overflow: auto !important;
+}
+
+/* Reset any transform or position that might cause scroll lock */
+body.swal2-shown {
+  overflow: auto !important;
+  padding-right: 0 !important;
+}

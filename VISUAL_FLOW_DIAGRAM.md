@@ -1,0 +1,605 @@
+# 🎨 Visual Flow Diagrams
+
+## Application Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     BROWSER (Client)                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │              React Application                       │  │
+│  │                                                      │  │
+│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐   │  │
+│  │  │   Pages    │  │ Dashboard  │  │  Services  │   │  │
+│  │  │            │  │ Components │  │            │   │  │
+│  │  │ - Welcome  │  │ - Main     │  │ - api.js   │   │  │
+│  │  │ - Login    │  │ - NFT Mgmt │  │ - wallet   │   │  │
+│  │  │ - Signup   │  │ - Wallet   │  │            │   │  │
+│  │  └────────────┘  └────────────┘  └────────────┘   │  │
+│  │                                                      │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                          │                                  │
+│                          │ HTTP/HTTPS                       │
+│                          │ (Axios)                          │
+└──────────────────────────┼──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  Backend API Server                         │
+│              https://api.gtnworld.live/api                      │
+├─────────────────────────────────────────────────────────────┤
+│  /auth/*  /user/*  /wallet/*  /nft/*  /package/*          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Component Hierarchy
+
+```
+App.jsx
+  └── Routes.jsx
+       ├── Welcome.jsx (/)
+       ├── Login.jsx (/Login)
+       ├── Signup.jsx (/SingUp)
+       └── MainDashBord.jsx (/dashbord)
+            ├── Dashboard.jsx (index)
+            ├── MyTeam.jsx (my-team)
+            ├── MLMTree.jsx (mlm-tree)
+            ├── Wallet.jsx (wallet)
+            ├── History.jsx (history)
+            ├── NFTHistory.jsx (nft-history)
+            ├── NFTManagement.jsx (nft-management) ⭐
+            ├── NFTMarketplace.jsx (nft-marketplace)
+            ├── PackageUpgrade.jsx (package-upgrade)
+            ├── AdminDashboard.jsx (admin)
+            └── Profile.jsx (profile)
+```
+
+## User Registration Flow
+
+```
+┌─────────────┐
+│   START     │
+│  /SingUp    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Fill Registration Form │
+│  - Name                 │
+│  - Email                │
+│  - Mobile               │
+│  - Password             │
+│  - Referral Code        │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Connect Wallet         │
+│  (Generate 0x address)  │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Submit Form            │
+│  POST /auth/register    │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Receive Token          │
+│  Store in localStorage  │
+└──────┬──────────────────┘
+       │
+       ▼ (Auto after 2s)
+┌─────────────────────────┐
+│  Process Payment        │
+│  POST /wallet/activate  │
+│  Amount: $10            │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Account Activated      │
+│  Navigate to Dashboard  │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────┐
+│     END     │
+│  /dashbord  │
+└─────────────┘
+```
+
+## NFT Buy/Sell Flow
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    NFT MANAGEMENT                        │
+└──────────────────────────────────────────────────────────┘
+
+BUY FLOW:
+┌─────────────┐
+│ Click "Buy  │
+│    NFT"     │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  SweetAlert2 Modal      │
+│  Input: Quantity (1-10) │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  User Enters Quantity   │
+│  Example: 3             │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  POST /api/nft/buy      │
+│  Body: { quantity: 3 }  │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Backend Creates NFTs   │
+│  - NFT-001 (hold)       │
+│  - NFT-002 (hold)       │
+│  - NFT-003 (hold)       │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Success Alert          │
+│  "Bought 3 NFT(s)"      │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Refresh NFT List       │
+│  fetchNFTs()            │
+└─────────────────────────┘
+
+SELL FLOW:
+┌─────────────┐
+│ Click "Sell │
+│  for $20"   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Confirmation Modal     │
+│  "Sell for $20?"        │
+│  "40% = $8 profit"      │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  User Confirms          │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  POST /api/nft/sell/ID  │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Backend Processes      │
+│  - Mark NFT as sold     │
+│  - Calculate profit: $8 │
+│  - Update balance       │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Success Alert          │
+│  "Earned $8 profit"     │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Refresh NFT List       │
+│  Update Stats           │
+└─────────────────────────┘
+```
+
+## State Management Flow
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              NFTManagement Component                    │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  STATE:                                                 │
+│  ┌─────────────────────────────────────────────────┐  │
+│  │  nfts: []                                       │  │
+│  │  stats: { total, holding, sold, totalProfit }  │  │
+│  │  loading: false                                 │  │
+│  └─────────────────────────────────────────────────┘  │
+│                                                         │
+│  EFFECTS:                                               │
+│  ┌─────────────────────────────────────────────────┐  │
+│  │  useEffect(() => {                              │  │
+│  │    fetchNFTs()  // On component mount           │  │
+│  │  }, [])                                         │  │
+│  └─────────────────────────────────────────────────┘  │
+│                                                         │
+│  FUNCTIONS:                                             │
+│  ┌─────────────────────────────────────────────────┐  │
+│  │  fetchNFTs()    → GET /api/nft/my-nfts         │  │
+│  │  buyNFT()       → POST /api/nft/buy            │  │
+│  │  sellNFT(id)    → POST /api/nft/sell/:id       │  │
+│  └─────────────────────────────────────────────────┘  │
+│                                                         │
+│  RENDER:                                                │
+│  ┌─────────────────────────────────────────────────┐  │
+│  │  Header + Buy Button                            │  │
+│  │  Stats Cards (4)                                │  │
+│  │  NFT List Grid                                  │  │
+│  └─────────────────────────────────────────────────┘  │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+## API Request Flow
+
+```
+Component Action
+      │
+      ▼
+┌─────────────────┐
+│  Get Token from │
+│  localStorage   │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Axios Request  │
+│  + Auth Header  │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Backend API    │
+│  Validates JWT  │
+└────────┬────────┘
+         │
+         ├─── Success ───┐
+         │               │
+         │               ▼
+         │        ┌─────────────────┐
+         │        │  Return Data    │
+         │        └────────┬────────┘
+         │                 │
+         │                 ▼
+         │        ┌─────────────────┐
+         │        │  Update State   │
+         │        └────────┬────────┘
+         │                 │
+         │                 ▼
+         │        ┌─────────────────┐
+         │        │  Re-render UI   │
+         │        └────────┬────────┘
+         │                 │
+         │                 ▼
+         │        ┌─────────────────┐
+         │        │  Show Success   │
+         │        │  Alert          │
+         │        └─────────────────┘
+         │
+         └─── Error ─────┐
+                         │
+                         ▼
+                  ┌─────────────────┐
+                  │  Show Error     │
+                  │  Alert          │
+                  └─────────────────┘
+```
+
+## Dashboard Navigation
+
+```
+┌────────────────────────────────────────────────────────┐
+│  HEADER                                          [A]   │
+│  [☰] Dashboard                                         │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│                  CONTENT AREA                          │
+│              (React Router Outlet)                     │
+│                                                        │
+│  Renders based on route:                              │
+│  /dashbord          → Dashboard.jsx                   │
+│  /dashbord/wallet   → Wallet.jsx                      │
+│  /dashbord/nft-management → NFTManagement.jsx         │
+│                                                        │
+├────────────────────────────────────────────────────────┤
+│  BOTTOM NAVIGATION (Fixed)                            │
+│  ┌────┐  ┌────┐  ┌────┐  ┌────┐  ┌────┐            │
+│  │Team│  │Wllt│  │Home│  │Hist│  │Prof│            │
+│  └────┘  └────┘  └────┘  └────┘  └────┘            │
+└────────────────────────────────────────────────────────┘
+
+SIDE DRAWER (when ☰ clicked):
+┌──────────────────┐
+│  Menu            │
+├──────────────────┤
+│  NFT Marketplace │
+│  MLM Network     │
+│  Package Upgrade │
+│  NFT History     │
+│  Admin Panel     │
+│  ─────────────   │
+│  Logout          │
+└──────────────────┘
+```
+
+## Package Upgrade System
+
+```
+┌─────────────────────────────────────────────────────┐
+│              PACKAGE HIERARCHY                      │
+└─────────────────────────────────────────────────────┘
+
+BASIC (Free)
+  ├─ Cost: $0
+  ├─ Levels: 0
+  └─ Features: Basic access
+
+PACKAGE 1
+  ├─ Cost: $50
+  ├─ Levels: 4
+  └─ Features: MLM up to 4 levels
+
+PACKAGE 2
+  ├─ Cost: $100
+  ├─ Levels: 6
+  └─ Features: MLM up to 6 levels
+
+PACKAGE 3
+  ├─ Cost: $200
+  ├─ Levels: 8
+  └─ Features: MLM up to 8 levels + Advanced
+
+PACKAGE 4
+  ├─ Cost: $500
+  ├─ Levels: 10
+  └─ Features: MLM up to 10 levels + Premium
+
+PACKAGE 5
+  ├─ Cost: $1000
+  ├─ Levels: 12
+  └─ Features: MLM up to 12 levels + VIP
+
+UPGRADE FLOW:
+User Balance ≥ Package Cost
+       │
+       ▼
+  Select Package
+       │
+       ▼
+  Confirm Upgrade
+       │
+       ▼
+POST /api/package/upgrade
+       │
+       ▼
+  Deduct Amount
+       │
+       ▼
+  Unlock Levels
+       │
+       ▼
+  Update UI
+```
+
+## MLM Level System
+
+```
+                    YOU (Level 0)
+                      │
+        ┌─────────────┼─────────────┐
+        │             │             │
+     Member A      Member B      Member C
+    (Level 1)     (Level 1)     (Level 1)
+        │             │             │
+    ┌───┴───┐     ┌───┴───┐     ┌───┴───┐
+    │       │     │       │     │       │
+   D1      D2    E1      E2    F1      F2
+ (Lvl 2) (Lvl 2)(Lvl 2) (Lvl 2)(Lvl 2) (Lvl 2)
+    │       │     │       │     │       │
+   ...     ...   ...     ...   ...     ...
+
+EARNING RULES:
+- Direct Members unlock levels (1 member = 2 levels)
+- Package determines max levels
+- Commission from each level's transactions
+- Higher package = More earning potential
+```
+
+## Data Flow in NFTManagement
+
+```
+┌─────────────────────────────────────────────────────┐
+│         Component Mount (useEffect)                 │
+└────────────────┬────────────────────────────────────┘
+                 │
+                 ▼
+         ┌───────────────┐
+         │  fetchNFTs()  │
+         └───────┬───────┘
+                 │
+                 ▼
+    ┌────────────────────────┐
+    │ GET /api/nft/my-nfts   │
+    └────────┬───────────────┘
+             │
+             ▼
+    ┌────────────────────────┐
+    │ Response:              │
+    │ {                      │
+    │   nfts: [...],         │
+    │   stats: {...}         │
+    │ }                      │
+    └────────┬───────────────┘
+             │
+             ▼
+    ┌────────────────────────┐
+    │ setNfts(response.nfts) │
+    │ setStats(response.stats)│
+    └────────┬───────────────┘
+             │
+             ▼
+    ┌────────────────────────┐
+    │   Component Renders    │
+    │   - Stats Cards        │
+    │   - NFT List           │
+    └────────────────────────┘
+
+USER ACTIONS:
+┌──────────┐         ┌──────────┐
+│ Buy NFT  │         │ Sell NFT │
+└────┬─────┘         └────┬─────┘
+     │                    │
+     ▼                    ▼
+  buyNFT()            sellNFT(id)
+     │                    │
+     ▼                    ▼
+  API Call            API Call
+     │                    │
+     └────────┬───────────┘
+              │
+              ▼
+        fetchNFTs()
+              │
+              ▼
+        Update UI
+```
+
+## Authentication Flow
+
+```
+┌─────────────┐
+│   Login     │
+│   Page      │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Enter Credentials      │
+│  - email                │
+│  - password             │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  POST /api/auth/login   │
+└──────┬──────────────────┘
+       │
+       ├─── Success ───┐
+       │               │
+       │               ▼
+       │      ┌─────────────────────┐
+       │      │  Response:          │
+       │      │  {                  │
+       │      │    token: "jwt...", │
+       │      │    user: {...}      │
+       │      │  }                  │
+       │      └──────┬──────────────┘
+       │             │
+       │             ▼
+       │      ┌─────────────────────┐
+       │      │  localStorage.set   │
+       │      │  - token            │
+       │      │  - user             │
+       │      └──────┬──────────────┘
+       │             │
+       │             ▼
+       │      ┌─────────────────────┐
+       │      │  Navigate to        │
+       │      │  /dashbord          │
+       │      └─────────────────────┘
+       │
+       └─── Error ────┐
+                      │
+                      ▼
+              ┌─────────────────────┐
+              │  Show Error Alert   │
+              │  "Invalid creds"    │
+              └─────────────────────┘
+
+SUBSEQUENT REQUESTS:
+┌─────────────────────────┐
+│  Any API Call           │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Axios Interceptor      │
+│  Adds Authorization:    │
+│  Bearer <token>         │
+└──────┬──────────────────┘
+       │
+       ▼
+┌─────────────────────────┐
+│  Backend Validates JWT  │
+└──────┬──────────────────┘
+       │
+       ├─── Valid ────┐
+       │              │
+       │              ▼
+       │      ┌─────────────────┐
+       │      │  Process Request│
+       │      └─────────────────┘
+       │
+       └─── Invalid ──┐
+                      │
+                      ▼
+              ┌─────────────────┐
+              │  401 Unauthorized│
+              │  Redirect Login │
+              └─────────────────┘
+```
+
+## Complete User Journey Map
+
+```
+START
+  │
+  ▼
+┌─────────────┐
+│  Welcome    │ (First Visit)
+│  Screen     │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  Register   │ (New User)
+│  + Payment  │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  Dashboard  │ (Main Hub)
+└──────┬──────┘
+       │
+       ├──────────────┬──────────────┬──────────────┐
+       │              │              │              │
+       ▼              ▼              ▼              ▼
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
+│   NFT    │   │  Wallet  │   │   Team   │   │ Package  │
+│   Mgmt   │   │          │   │          │   │ Upgrade  │
+└──────────┘   └──────────┘   └──────────┘   └──────────┘
+       │              │              │              │
+       │              │              │              │
+       └──────────────┴──────────────┴──────────────┘
+                      │
+                      ▼
+              ┌──────────────┐
+              │  Earn Money  │
+              │  Build Team  │
+              │  Grow Income │
+              └──────────────┘
+```
