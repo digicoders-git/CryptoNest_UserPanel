@@ -62,7 +62,7 @@ const Dashboard = ({ onBack }) => {
   const [balanceLoaded, setBalanceLoaded] = useState(false);
   const [showLevelModal, setShowLevelModal] = useState(false);
   const [levelEarnings, setLevelEarnings] = useState([]);
-  const [hideBalance, setHideBalance] = useState(false);
+  const [hideBalance, setHideBalance] = useState(true);
   const [pullDistance, setPullDistance] = useState(0);
   const [isPulling, setIsPulling] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -385,7 +385,7 @@ const Dashboard = ({ onBack }) => {
                 <div className="w-8 h-8 rounded-xl bg-[#FCE270]/15 flex items-center justify-center">
                   <RiWallet3Line className="text-[#FCE270]" size={18} />
                 </div>
-                <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Total Balance</span>
+                <span className="text-[12px] text-white font-semibold tracking-widest">Total Balance</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -401,7 +401,7 @@ const Dashboard = ({ onBack }) => {
               </div>
             </div>
 
-            <h1 className="text-[40px] font-black text-white leading-none tracking-tighter mb-1">
+            <h1 className="text-[48px] font-semibold text-white leading-none tracking-tighter mb-1">
               {hideBalance ? '••••••' : (
                 <>
                   <span className="text-[#FCE270] text-[28px] align-top">$</span>
@@ -423,16 +423,16 @@ const Dashboard = ({ onBack }) => {
             <div className="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0 mb-2">
               <RiTeamLine className="text-blue-400" size={20} />
             </div>
-            <p className="text-[12px] text-white font-black tracking-wide">Team</p>
-            <p className="text-[20px] font-black text-white">{stats.teamSize}</p>
+            <p className="text-[14px] text-white font-semibold tracking-wide">Team</p>
+            <p className="text-[22px] font-semibold text-white">{stats.teamSize}</p>
             <p className="text-[9px] text-gray-500 font-bold">{stats.activeTeamMembers} active</p>
           </div>
           <div className="bg-gradient-to-br from-[#1A1A1A] to-[#151515] p-4 rounded-2xl border border-white/5 flex flex-col items-start justify-center active:scale-[0.97] transition-all">
             <div className="w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0 mb-2">
               <RiNftLine className="text-purple-400" size={20} />
             </div>
-            <p className="text-[12px] text-white font-black tracking-wide">Tokens</p>
-            <p className="text-[20px] font-black text-white">{nftStats.total}</p>
+            <p className="text-[14px] text-white font-semibold tracking-wide">Tokens</p>
+            <p className="text-[22px] font-semibold text-white">{nftStats.total}</p>
             <p className="text-[9px] text-gray-500 font-bold">{nftStats.holding} holding</p>
           </div>
         </div>
@@ -449,8 +449,8 @@ const Dashboard = ({ onBack }) => {
               <div className={`w-9 h-9 rounded-xl ${item.bg} ${item.border} border flex items-center justify-center mb-3 ${item.color}`}>
                 {item.icon}
               </div>
-              <p className="text-[12px] text-white font-black tracking-wide mb-1">{item.label}</p>
-              <p className={`text-[18px] font-black tracking-tight ${item.color}`}>
+              <p className="text-[14px] text-white font-semibold tracking-wide mb-1">{item.label}</p>
+              <p className={`text-[20px] font-semibold tracking-tight ${item.color}`}>
                 ${Number(item.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>

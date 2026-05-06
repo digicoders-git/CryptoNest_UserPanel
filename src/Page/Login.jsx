@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { authAPI, walletAPI } from "../services/api";
 import realWalletService from "../services/realWalletService";
 import { IoChevronBack, IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { requestNotificationPermission } from "../services/firebaseService";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,6 +48,9 @@ const Login = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       localStorage.setItem('userEmail', response.data.user.email);
+
+      // ✅ FCM Token request karo login ke baad
+      requestNotificationPermission();
 
       if (response.data.needsActivation || !response.data.user.isActive) {
         Swal.fire({

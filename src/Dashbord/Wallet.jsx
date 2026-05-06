@@ -770,19 +770,9 @@ const Wallet = () => {
   };
 
   return (
-    <div className="space-y-5 pb-16 px-2 bg-black min-h-screen font-sans">
+    <div className="space-y-5 pb-16 px-2 bg-black min-h-screen font-sans pt-3">
       {/* Simple Header */}
-      <div className="flex items-center justify-between pt-4 px-2">
-        <div>
-          <h2 className="text-[24px] font-black text-white tracking-tight leading-none">
-            Financial <span className="text-[#FCE270]">Ledger</span>
-          </h2>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Digital Assets & Transactions</p>
-        </div>
-        <div className="w-10 h-10 bg-[#1A1A1A] rounded-xl border border-white/5 flex items-center justify-center">
-          <FaWallet className="text-[#FCE270]" size={18} />
-        </div>
-      </div>
+
 
       <div className="mb-1">
         <WalletStatus />
@@ -791,9 +781,9 @@ const Wallet = () => {
       {/* Simple Balance Card */}
       <div className="bg-[#1A1A1A] p-6 rounded-[28px] border border-white/5 relative overflow-hidden mt-4">
         <div className="absolute top-0 right-0 w-24 h-24 bg-[#FCE270]/5 rounded-full -mr-12 -mt-12 blur-2xl"></div>
-        <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1">Available Balance</p>
+        <p className="text-[14px] text-white font-semibold tracking-widest mb-1">Available Balance</p>
         <h3 className="text-[34px] font-black text-white tracking-tighter">
-          <span className="text-[#FCE270] mr-1">$</span>
+
           {balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
         </h3>
         <div className="flex items-center gap-4 mt-4 text-[11px] font-bold">
@@ -823,8 +813,8 @@ const Wallet = () => {
       {/* Simple Transaction List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
-          <h3 className="font-black text-xs text-gray-400 uppercase tracking-widest">Recent Activity</h3>
-          <button onClick={fetchTransactions} className="text-[#FCE270] text-[10px] font-black uppercase">Refresh</button>
+          <h3 className="font-semibold text-[14px] text-gray-300 tracking-wide">Recent Activity</h3>
+          <button onClick={fetchTransactions} className="text-[#FCE270] text-[12px] font-semibold">Refresh</button>
         </div>
 
         <div className="bg-[#1A1A1A] rounded-[24px] border border-white/5 p-2 space-y-1">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
   FaUsers,
@@ -29,10 +29,12 @@ import {
 } from "react-icons/ri";
 import { FiShoppingBag, FiArrowUpCircle, FiHeadphones } from "react-icons/fi";
 import { HiOutlineUsers, HiOutlineLockClosed } from "react-icons/hi";
+import { requestNotificationPermission, onForegroundMessage } from "../services/firebaseService";
 
 export default function MainDashBord() {
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchNotification = async () => {
@@ -78,28 +80,50 @@ export default function MainDashBord() {
     fetchNotification();
   }, []);
 
-  const bottomNavItems = [
-    { to: "/dashbord/nft-marketplace", label: "Exchange", icon: <RiStore3Line size={20} /> },
-    { to: "/dashbord/wallet", label: "Ledger", icon: <FaWallet size={20} /> },
-    {
-      to: "/dashbord",
-      label: "Console",
-      icon: <MdDashboard size={24} />,
-      exact: true,
-    },
-    { to: "/dashbord/my-team", label: "Refer", icon: <RiTeamLine size={20} /> },
-    { to: "/dashbord/profile", label: "Profile", icon: <FaUser size={20} /> },
-  ];
+  // ✅ Register for Push Notifications and Handle Foreground Messages
+  useEffect(() => {
+    // Request permission and save token to backend
+    const setupNotifications = async () => {
+      const token = await requestNotificationPermission();
+      if (token) {
+        console.log("Push notifications registered successfully");
+      }
+    };
+
+    setupNotifications();
+
+    // Handle foreground notifications with a nice Swal toast
+    const unsubscribe = onForegroundMessage((payload) => {
+      const title = payload?.notification?.title || '🔔 New Notification';
+      const body = payload?.notification?.body || '';
+
+      Swal.fire({
+        title: title,
+        text: body,
+        icon: 'info',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        background: '#1A1A1A',
+        color: '#FCE270',
+        iconColor: '#FCE270',
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+    });
+
+    return () => unsubscribe && unsubscribe();
+  }, []);
 
   const menuItems = [
-    // { to: "/dashbord/nft-dashboard", label: "Analytics Dashboard", icon: <RiDashboardLine /> },
-
     { to: "/dashbord/my-nfts", label: "CryptoNest Treasury", icon: <RiNftFill /> },
     { to: "/dashbord/history", label: "Transaction History", icon: <RiHistoryLine /> },
     { to: "/dashbord/notifications", label: "CryptoNest Alerts", icon: <RiNotification3Line /> },
     { to: "/dashbord/contact-us", label: "Support Concierge", icon: <FiHeadphones /> },
-    // { to: "/dashbord/nft-management", label: "CryptoNest Protocol", icon: <MdOutlineToken /> },
-
     { to: "/dashbord/package-upgrade", label: "Upgrade Limit", icon: <MdUpgrade /> },
     { to: "/dashbord/nft-history", label: "CryptoNest History", icon: <RiHistoryLine /> },
     { to: "/dashbord/mlm-tree", label: "Alliance Matrix", icon: <HiOutlineUsers /> },
@@ -107,8 +131,22 @@ export default function MainDashBord() {
     { to: "/dashbord/change-password", label: "Access Security", icon: <HiOutlineLockClosed /> },
   ];
 
+  const bottomNavItems = [
+    { to: "/dashbord/nft-marketplace", label: "Exchange", icon: <RiStore3Line size={20} /> },
+    { to: "/dashbord/wallet", label: "Ledger", icon: <FaWallet size={20} /> },
+    { to: "/dashbord", label: "Console", icon: <MdDashboard size={24} />, exact: true },
+    { to: "/dashbord/my-team", label: "Refer", icon: <RiTeamLine size={20} /> },
+    { to: "/dashbord/profile", label: "Profile", icon: <FaUser size={20} /> },
+  ];
+
+  const allItems = [...menuItems, ...bottomNavItems];
+  const currentPage =
+    (location.pathname === "/dashbord"
+      ? "Console"
+      : allItems.find((item) => item.to === location.pathname)?.label) || "Dashboard";
+
   return (
-    <div className="flex flex-col min-h-screen bg-black max-w-md mx-auto relative font-sans">
+    <div className="flex flex-col h-screen bg-black max-w-md mx-auto relative font-sans overflow-hidden">
       {/* ===== HEADER ===== */}
       <header className="sticky top-0 z-30 bg-black/80 backdrop-blur-md border-b border-[#FCE270]/10 px-5 py-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
@@ -118,7 +156,7 @@ export default function MainDashBord() {
           >
             <FaBars size={18} />
           </button>
-          <h1 className="font-bold text-[19px] text-white tracking-tight">CryptoNest</h1>
+          <h1 className="font-bold text-[15px] text-white tracking-tight">{currentPage}</h1>
         </div>
 
         <div className="flex items-center gap-3">
@@ -140,7 +178,7 @@ export default function MainDashBord() {
       </header>
 
       {/* ===== CONTENT ===== */}
-      <main className="flex-1 overflow-y-auto   pb-10 bg-black">
+      <main className="flex-1 overflow-y-auto  bg-black">
         <Outlet />
       </main>
 

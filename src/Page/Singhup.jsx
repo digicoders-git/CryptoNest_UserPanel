@@ -100,6 +100,10 @@ const Signup = () => {
       Swal.fire({ icon: 'warning', title: '<span style="color:#fff">Missing Fields</span>', text: 'Please fill all required fields', background: '#111111', confirmButtonColor: '#FCE270', confirmButtonText: '<span style="color:black;font-weight:900;">OK</span>', customClass: { popup: 'rounded-[32px] border border-white/5' } });
       return;
     }
+    if (!validateEmail(formData.email)) {
+      Swal.fire({ icon: 'error', title: '<span style="color:#fff">Invalid Email</span>', text: 'Please enter a valid email address (e.g. user@example.com)', background: '#111111', confirmButtonColor: '#FCE270', confirmButtonText: '<span style="color:black;font-weight:900;">OK</span>', customClass: { popup: 'rounded-[32px] border border-white/5' } });
+      return;
+    }
     if (!formData.referralCode) {
       Swal.fire({ icon: 'warning', title: '<span style="color:#fff">Referral Required</span>', text: 'Please enter a referral code to continue', background: '#111111', confirmButtonColor: '#FCE270', confirmButtonText: '<span style="color:black;font-weight:900;">OK</span>', customClass: { popup: 'rounded-[32px] border border-white/5' } });
       return;
@@ -134,8 +138,22 @@ const Signup = () => {
     return () => clearTimeout(timer);
   }, [formData.email]);
 
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === "email") {
+      if (value && !validateEmail(value)) {
+        setEmailError("Invalid email format");
+      } else {
+        setEmailError("");
+      }
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -186,6 +204,7 @@ const Signup = () => {
       const result = await realWalletService.connectWallet();
       if (result.success) {
         setConnectedWallet(result.account);
+        Swal.close();
         Swal.fire({
           icon: "success",
           title: `<span style="color: #fff">Wallet Connected!</span>`,
@@ -538,6 +557,14 @@ const Signup = () => {
 
         Swal.fire({ title: `<span style="color: #fff">Processing Protocol...</span>`, text: "Confirming USDT transaction in your wallet", background: '#111111', color: '#ccc', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
         paymentResult = await realWalletService.sendUSDTPayment(planAmount);
+        if (!paymentResult.success) {
+          const errMsg = paymentResult.error || '';
+          const isCancelled = errMsg.toLowerCase().includes('cancel') || errMsg.toLowerCase().includes('reject') || errMsg.toLowerCase().includes('denied') || errMsg.toLowerCase().includes('user refused');
+          Swal.close();
+          Swal.fire({ icon: isCancelled ? 'warning' : 'error', title: `<span style="color:#fff">${isCancelled ? 'Payment Cancelled' : 'Payment Failed'}</span>`, text: isCancelled ? 'You cancelled the transaction in your wallet.' : errMsg, background: '#111111', confirmButtonColor: '#FCE270', confirmButtonText: '<span style="color:black;font-weight:900;">OK</span>', customClass: { popup: 'rounded-[32px] border border-white/5' } });
+          setLoading(false);
+          return;
+        }
       } else {
         Swal.fire({ title: `<span style="color: #fff">Accessing Market...</span>`, text: `Calculating BNB swap for $${planAmount} USD`, background: '#111111', color: '#ccc', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
@@ -558,6 +585,14 @@ const Signup = () => {
 
         Swal.fire({ title: "Processing BNB Payment...", text: "Please confirm the BNB transaction in your wallet", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
         paymentResult = await realWalletService.sendPayment(planAmount);
+        if (!paymentResult.success) {
+          const errMsg = paymentResult.error || '';
+          const isCancelled = errMsg.toLowerCase().includes('cancel') || errMsg.toLowerCase().includes('reject') || errMsg.toLowerCase().includes('denied') || errMsg.toLowerCase().includes('user refused');
+          Swal.close();
+          Swal.fire({ icon: isCancelled ? 'warning' : 'error', title: `<span style="color:#fff">${isCancelled ? 'Payment Cancelled' : 'Payment Failed'}</span>`, text: isCancelled ? 'You cancelled the transaction in your wallet.' : errMsg, background: '#111111', confirmButtonColor: '#FCE270', confirmButtonText: '<span style="color:black;font-weight:900;">OK</span>', customClass: { popup: 'rounded-[32px] border border-white/5' } });
+          setLoading(false);
+          return;
+        }
       }
 
       if (paymentResult.success) {
@@ -619,29 +654,23 @@ const Signup = () => {
     <div className="min-h-screen bg-[#0A0A0A] max-w-md mx-auto relative font-sans">
 
       {/* STICKY HEADER */}
-      
+
 
       {/* CONTENT */}
       <div className="px-4 pb-28 space-y-5">
 
         {/* HERO HEADER */}
         <div className="text-center pt-4 pb-2">
-          <div className="w-16 h-16 rounded-2xl bg-[#FCE270]/10 border border-[#FCE270]/20 flex items-center justify-center mx-auto mb-4">
-            <img src="/Nextlogo-removebg-preview.png" alt="Logo" className="w-10 h-10 object-contain" />
-          </div>
-          <h1 className="text-[28px] font-black text-white tracking-tight leading-none mb-1">
-            Create <span className="text-[#FCE270]">Account</span>
-          </h1>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Initialize Financial Protocol</p>
         </div>
-
-
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
           {/* STEP 1: Personal Info */}
           <div className={`space-y-4 ${step !== 1 ? 'hidden' : ''}`}>
             <div className="bg-gradient-to-br from-[#1A1A1A] to-[#151515] rounded-[24px] border border-white/5 p-5 space-y-4">
+              <div className="flex justify-center mb-2">
+                <img src="/Nextlogo-removebg-preview.png" alt="Logo" className="w-40 h-40 object-contain" />
+              </div>
               <div className="flex items-center gap-2 mb-2">
                 <FaUser size={12} className="text-[#FCE270]" />
                 <span className="text-[11px] font-black text-white uppercase tracking-wider">Personal Details</span>
@@ -659,14 +688,20 @@ const Signup = () => {
                 <label className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Email *</label>
                 <div className="relative">
                   <input type="email" name="email" placeholder="Enter email" value={formData.email} onChange={handleChange} required
-                    className={`w-full bg-black/40 border rounded-xl py-3.5 px-4 text-sm text-white placeholder-gray-700 focus:border-[#FCE270]/30 transition-all outline-none ${emailStatus.exists ? 'border-red-500/50' : 'border-white/5'}`} />
+                    className={`w-full bg-black/40 border rounded-xl py-3.5 px-4 text-sm text-white placeholder-gray-700 focus:border-[#FCE270]/30 transition-all outline-none ${
+                      emailError ? 'border-red-500/50' : emailStatus.exists ? 'border-red-500/50' : 'border-white/5'}`} />
                   {emailStatus.checking && (
                     <div className="absolute right-4 top-1/2 -translate-y-1/2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#FCE270]"></div>
                     </div>
                   )}
                 </div>
-                {emailStatus.message && (
+                {emailError && (
+                  <p className="text-[8px] font-black uppercase tracking-widest mt-1 text-red-500">
+                    ❌ {emailError}
+                  </p>
+                )}
+                {!emailError && emailStatus.message && (
                   <p className={`text-[8px] font-black uppercase tracking-widest mt-1 ${emailStatus.exists ? 'text-red-500' : 'text-green-500'}`}>
                     {emailStatus.message}
                   </p>
@@ -713,7 +748,7 @@ const Signup = () => {
           </div>
 
           {/* STEP 2: Plan & Wallet */}
-          <div className={`space-y-4 ${step !== 2 ? 'hidden' : ''}`}>
+          <div className={`space-y-4 pt-6 ${step !== 2 ? 'hidden' : ''}`}>
             {/* Plan Selection */}
             <div className="bg-gradient-to-br from-[#1A1A1A] to-[#151515] rounded-[24px] border border-white/5 p-5 space-y-3">
               <div className="flex items-center gap-2 mb-1">
@@ -788,7 +823,7 @@ const Signup = () => {
           </div>
 
           {/* STEP 3: Password & Submit */}
-          <div className={`space-y-4 ${step !== 3 ? 'hidden' : ''}`}>
+          <div className={`space-y-4 pt-6 ${step !== 3 ? 'hidden' : ''}`}>
             <div className="bg-gradient-to-br from-[#1A1A1A] to-[#151515] rounded-[24px] border border-white/5 p-5 space-y-4">
               <div className="flex items-center gap-2 mb-1">
                 <FaLock size={12} className="text-[#FCE270]" />
