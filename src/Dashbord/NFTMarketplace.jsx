@@ -20,6 +20,8 @@ const NFTMarketplace = ({ onBack }) => {
   const [loading, setLoading] = useState(true);
   const [buying, setBuying] = useState(null);
   const [currentBatch, setCurrentBatch] = useState(0);
+  const [currentPhase, setCurrentPhase] = useState('pre-launch');
+  const [batchInfo, setBatchInfo] = useState(null);
   const [pullDistance, setPullDistance] = useState(0);
   const [isPulling, setIsPulling] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -80,29 +82,20 @@ const NFTMarketplace = ({ onBack }) => {
   const fetchMarketplace = async () => {
     try {
       const response = await nftAPI.getMarketplace();
-      const nftData = response.data.nfts || response.data || [];
+      const data = response.data;
+      const nftData = data.nfts || [];
+
       setAllNfts(nftData);
+      setCurrentPhase(data.currentPhase || 'pre-launch');
+      setBatchInfo(data.batchInfo || null);
+      setCurrentBatch(data.batchInfo?.currentBatch || 0);
 
-      const availableNfts = nftData.filter(nft => {
-        const status = nft.status || 'available';
-        return status !== 'sold' && status !== 'purchased' && (status === 'available' || status === 'listed' || !nft.status);
-      });
-
+      const availableNfts = nftData.filter(nft => 
+        !nft.status || nft.status === 'available'
+      );
       setNfts(availableNfts);
-      setCurrentBatch(0);
-
-      if (nftData.length === 0) {
-        const demoNFTs = [
-          { _id: 'demo1', nftId: 'NFT-BATCH-101', batchId: 1, generation: 1, status: 'available', buyPrice: 10, sellPrice: 20, phase: 'pre-launch' },
-          { _id: 'demo2', nftId: 'NFT-BATCH-102', batchId: 1, generation: 1, status: 'available', buyPrice: 10, sellPrice: 20, phase: 'pre-launch' }
-        ];
-        setNfts(demoNFTs);
-        setAllNfts(demoNFTs);
-      }
     } catch (error) {
-      const demoNFTs = [{ _id: 'demo1', nftId: 'NFT-BATCH-101', batchId: 1, generation: 1, status: 'available', buyPrice: 10, sellPrice: 20, phase: 'pre-launch' }];
-      setNfts(demoNFTs);
-      setAllNfts(demoNFTs);
+      console.error('Marketplace fetch error:', error);
     }
     setLoading(false);
   };
@@ -116,47 +109,41 @@ const NFTMarketplace = ({ onBack }) => {
     setBuying(nftId);
     try {
       let response;
+
       if (isUserListed) {
+        // User resold NFT — use /buy endpoint
         response = await nftAPI.buyNFT(nftId);
-        Swal.fire({
-          icon: "success",
-          title: "ACQUIRED",
-          html: `
-            <div style="text-align: left; font-family: sans-serif;">
-              <div style="background: #000; padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; text-align: center;">
-                 <p style="font-size: 10px; font-weight: 900; color: #666; text-transform: uppercase; margin-bottom: 5px;">ASSET ID</p>
-                 <p style="font-size: 18px; font-weight: 900; color: #FCE270; margin: 0;">${nftId}</p>
-              </div>
-              <div style="background: #252525; padding: 15px; border-radius: 16px; border-left: 3px solid #FCE270;">
-                 <p style="font-size: 10px; font-weight: 900; color: #888; text-transform: uppercase; margin-bottom: 10px;">REWARDS RECEIVED</p>
-                 <ul style="padding-left: 15px; margin: 0; font-size: 11px; color: #aaa; line-height: 1.6;">
-                   <li>1 <strong style="color: #fff;">Vault Asset</strong> (Collector)</li>
-                   <li>1 <strong style="color: #fff;">Market Asset</strong> (Sellable)</li>
-                 </ul>
-              </div>
-            </div>
-          `,
-          background: '#1A1A1A',
-          color: '#fff',
-          confirmButtonColor: "#FCE270",
-          confirmButtonText: '<span style="color: #000; font-weight: 900;">DONE</span>',
-        });
+      } else if (currentPhase === 'trading') {
+        // Trading phase — use /buy-trading
+        response = await nftAPI.buyTradingNFT();
       } else {
-        try {
-          response = await nftAPI.buyPreLaunchNFT();
-        } catch (error) {
-          if (error.response?.status === 400) {
-            response = await nftAPI.buyTradingNFT();
-          } else {
-            throw error;
-          }
-        }
-        Swal.fire({ icon: "success", title: "SUCCESS", text: response.data.message || "Asset added to vault", background: '#1A1A1A', color: '#fff', confirmButtonColor: "#FCE270" });
+        // Pre-launch phase — use /buy-prelaunch
+        response = await nftAPI.buyPreLaunchNFT();
       }
+
+      const nftsReceived = response.data.nftsReceived || 1;
+
+      Swal.fire({
+        icon: "success",
+        title: "ACQUIRED",
+        html: `
+          <div style="text-align:center; font-family:sans-serif;">
+            <p style="font-size:28px; font-weight:900; color:#FCE270; margin:10px 0;">${nftsReceived} NFTs</p>
+            <p style="font-size:11px; color:#aaa;">Successfully added to your vault</p>
+            <div style="background:#111; padding:12px; border-radius:12px; margin-top:12px; border:1px solid rgba(252,226,112,0.2);">
+              <p style="font-size:10px; color:#666; margin:0;">Both NFTs are in <strong style="color:#FCE270;">SELL</strong> status — ready to trade</p>
+            </div>
+          </div>
+        `,
+        background: '#1A1A1A',
+        color: '#fff',
+        confirmButtonColor: "#FCE270",
+        confirmButtonText: '<span style="color:#000; font-weight:900;">DONE</span>',
+      });
 
       await fetchMarketplace();
       await fetchBalance();
-      window.dispatchEvent(new CustomEvent("balanceUpdate", { detail: { balance: response.data.newBalance || userBalance - price } }));
+      window.dispatchEvent(new CustomEvent("balanceUpdate", { detail: { balance: response.data.newBalance ?? userBalance - price } }));
     } catch (error) {
       Swal.fire({ icon: "error", title: "ERROR", text: error.response?.data?.message || "Failed", background: '#1A1A1A', color: '#fff', confirmButtonColor: "#FCE270" });
     }
@@ -259,6 +246,26 @@ const NFTMarketplace = ({ onBack }) => {
             </div>
           </div>
         </div>
+
+        {/* PHASE + BATCH INFO BANNER */}
+        {currentPhase && (
+          <div className="flex items-center justify-between bg-gradient-to-r from-[#1A1A1A] to-[#161616] px-4 py-3 rounded-2xl border border-white/5">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full animate-pulse ${currentPhase === 'trading' ? 'bg-green-400' : currentPhase === 'pre-launch' ? 'bg-[#FCE270]' : 'bg-blue-400'}`}></div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-white">
+                {currentPhase === 'pre-launch' ? 'Pre-Launch Phase' : currentPhase === 'trading' ? 'Trading Phase' : 'Blockchain Phase'}
+              </span>
+            </div>
+            {batchInfo && currentPhase === 'pre-launch' && (
+              <span className="text-[10px] font-black text-[#FCE270] tracking-wide">
+                Batch {batchInfo.currentBatch}/{batchInfo.totalBatches} — {batchInfo.batchProgress}
+              </span>
+            )}
+            {currentPhase === 'trading' && (
+              <span className="text-[10px] font-black text-green-400 tracking-wide">Open Market</span>
+            )}
+          </div>
+        )}
 
         {/* MARKET STATS */}
         <div className="grid grid-cols-3 gap-2.5">
