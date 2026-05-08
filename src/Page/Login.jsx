@@ -56,7 +56,7 @@ const Login = () => {
         Swal.fire({
           icon: "warning",
           title: "Account Not Activated",
-          text: "Please complete $10 payment to activate",
+          text: "Please complete payment to activate your account",
           background: '#1A1A1A',
           color: '#fff',
           confirmButtonColor: "#FCE270",

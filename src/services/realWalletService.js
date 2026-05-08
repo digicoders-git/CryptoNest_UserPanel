@@ -430,7 +430,7 @@ class RealWalletService {
 
   /* -------------------- SEND PAYMENT - Fixed -------------------- */
 
-  async sendPayment(amountInUSD) {
+  async sendPayment(amountInUSD, livePriceUSD = null) {
     try {
       if (!this.isConnected || !this.account) {
         throw new Error("Wallet not connected");
@@ -440,12 +440,13 @@ class RealWalletService {
         throw new Error("Wagmi config not available");
       }
 
-      // Get current token price (BNB or ETH based on network)
-      const ethAmount = (amountInUSD / tokenPriceUSD).toFixed(6);
+      // Live price use karo agar diya, warna fallback
+      const priceToUse = livePriceUSD || tokenPriceUSD;
+      const ethAmount = (amountInUSD / priceToUse).toFixed(6);
       const value = parseEther(ethAmount);
 
       const tokenSymbol = networkType === 'bnb' ? 'BNB' : 'ETH';
-      console.log(`💰 Sending payment: $${amountInUSD} = ${ethAmount} ${tokenSymbol}`);
+      console.log(`💰 Sending payment: $${amountInUSD} = ${ethAmount} ${tokenSymbol} @ $${priceToUse}`);
 
       const hash = await sendTransaction(this.wagmiConfig, {
         to: companyWallet,

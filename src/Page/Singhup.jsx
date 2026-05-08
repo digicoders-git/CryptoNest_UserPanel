@@ -353,7 +353,7 @@ const Signup = () => {
       return;
     }
 
-    const planAmount = formData.selectedPlan === "premium" ? 20 : 10;
+    const planAmount = formData.selectedPlan === "premium" ? 20 : 15;
     const paymentChoice = await Swal.fire({
       title: `<span style="color: #fff; font-family: sans-serif; font-weight: 900; letter-spacing: -0.02em;">Select Payment Method</span>`,
       background: '#111111',
@@ -540,7 +540,7 @@ const Signup = () => {
         return;
       }
 
-      const planAmount = formData.selectedPlan === "premium" ? 20 : 10;
+      const planAmount = formData.selectedPlan === "premium" ? 20 : 15;
       let paymentResult;
 
       if (paymentMethod === "usdt") {
@@ -569,8 +569,7 @@ const Signup = () => {
         Swal.fire({ title: `<span style="color: #fff">Accessing Market...</span>`, text: `Calculating BNB swap for $${planAmount} USD`, background: '#111111', color: '#ccc', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
         const currentBNBPrice = await fetchCurrentBNBPrice();
-        const fixedBNBAmounts = { basic: "0.014", premium: "0.028" };
-        const exactBNBAmount = fixedBNBAmounts[formData.selectedPlan] || fixedBNBAmounts.basic;
+        const exactBNBAmount = (15 / currentBNBPrice).toFixed(6);
 
         const confirmResult = await Swal.fire({
           title: `<span style="color: #fff">Confirm BNB Payment</span>`,
@@ -584,7 +583,7 @@ const Signup = () => {
         if (!confirmResult.isConfirmed) { setLoading(false); return; }
 
         Swal.fire({ title: "Processing BNB Payment...", text: "Please confirm the BNB transaction in your wallet", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-        paymentResult = await realWalletService.sendPayment(planAmount);
+        paymentResult = await realWalletService.sendPayment(planAmount, currentBNBPrice);
         if (!paymentResult.success) {
           const errMsg = paymentResult.error || '';
           const isCancelled = errMsg.toLowerCase().includes('cancel') || errMsg.toLowerCase().includes('reject') || errMsg.toLowerCase().includes('denied') || errMsg.toLowerCase().includes('user refused');
@@ -688,8 +687,7 @@ const Signup = () => {
                 <label className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Email *</label>
                 <div className="relative">
                   <input type="email" name="email" placeholder="Enter email" value={formData.email} onChange={handleChange} required
-                    className={`w-full bg-black/40 border rounded-xl py-3.5 px-4 text-sm text-white placeholder-gray-700 focus:border-[#FCE270]/30 transition-all outline-none ${
-                      emailError ? 'border-red-500/50' : emailStatus.exists ? 'border-red-500/50' : 'border-white/5'}`} />
+                    className={`w-full bg-black/40 border rounded-xl py-3.5 px-4 text-sm text-white placeholder-gray-700 focus:border-[#FCE270]/30 transition-all outline-none ${emailError ? 'border-red-500/50' : emailStatus.exists ? 'border-red-500/50' : 'border-white/5'}`} />
                   {emailStatus.checking && (
                     <div className="absolute right-4 top-1/2 -translate-y-1/2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#FCE270]"></div>
@@ -756,7 +754,7 @@ const Signup = () => {
                 <span className="text-[11px] font-black text-white uppercase tracking-wider">Select Plan</span>
               </div>
 
-              {['basic', 'premium'].map((plan) => (
+              {['basic'].map((plan) => (
                 <div key={plan} onClick={() => setFormData(prev => ({ ...prev, selectedPlan: plan }))}
                   className={`p-4 rounded-2xl border transition-all active:scale-[0.98] ${formData.selectedPlan === plan
                     ? 'bg-[#FCE270]/10 border-[#FCE270]/30'
@@ -771,7 +769,7 @@ const Signup = () => {
                       {formData.selectedPlan === plan && <FaCheckCircle size={10} className="text-black" />}
                     </div>
                   </div>
-                  <p className="text-[24px] font-black text-white">${plan === 'premium' ? '20' : '10'}</p>
+                  <p className="text-[24px] font-black text-white">${plan === 'premium' ? '20' : '15'}</p>
                   <div className="flex gap-2 mt-2">
                     {(plan === 'premium' ? ['Unlimited', 'Global Pool', 'VIP Support'] : ['$500 Limit', 'Basic Pool', 'Standard']).map((f, i) => (
                       <span key={i} className="text-[8px] text-gray-500 font-black uppercase bg-white/5 px-2 py-1 rounded-lg">{f}</span>
@@ -858,8 +856,8 @@ const Signup = () => {
             {/* Summary */}
             <div className="bg-black/30 rounded-xl p-4 border border-white/5 space-y-2">
               <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Order Summary</p>
-              <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Plan</span><span className="text-white uppercase">{formData.selectedPlan}</span></div>
-              <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Amount</span><span className="text-[#FCE270] font-black">${formData.selectedPlan === 'premium' ? '20' : '10'}</span></div>
+              {/* <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Plan</span><span className="text-white uppercase">{formData.selectedPlan}</span></div> */}
+              <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Amount</span><span className="text-[#FCE270] font-black">${formData.selectedPlan === 'premium' ? '20' : '15'}</span></div>
               <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Wallet</span><span className="text-green-400 text-[9px]">{connectedWallet ? 'Connected' : 'Not connected'}</span></div>
             </div>
 
@@ -870,7 +868,7 @@ const Signup = () => {
               </button>
               <button type="submit" disabled={loading}
                 className="flex-1 bg-[#FCE270] text-black h-13 rounded-2xl font-black text-[12px] uppercase tracking-widest active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-[#FCE270]/20">
-                {loading ? 'Processing...' : `Register $${formData.selectedPlan === 'premium' ? '20' : '10'}`}
+                {loading ? 'Processing...' : `Register $${formData.selectedPlan === 'premium' ? '20' : '15'}`}
               </button>
             </div>
 
