@@ -1,125 +1,93 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { TrendingUp, Shield, Zap, Bitcoin, ArrowRight, BarChart3 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const WelcomeCard = () => {
-  const navigate = useNavigate();
-
+const WelcomeScreen = () => {
   return (
-    <div className="w-screen h-screen bg-black overflow-hidden font-sans">
-      {/* Mobile Container - iPhone like bezel effect */}
-      <div className="relative w-full h-full bg-black">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
 
+      {/* Background Gradient Effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-yellow-900/10 via-black to-black" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-yellow-900/20 via-transparent to-transparent" />
 
-        {/* Dynamic Island (Modern iPhone) */}
-        <div className="absolute top-1 left-1/2 transform -translate-x-1/2 z-10">
-          <div className="w-[110px] h-[35px] bg-black rounded-full"></div>
-        </div>
+      {/* Main Container */}
+      <div className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
 
-        {/* Main Content */}
-        <div className="w-full h-full flex flex-col">
+        {/* Logo & Brand Section */}
+        <div className="text-center mb-8 sm:mb-12 animate-fade-in">
+          <div className="flex items-center justify-center mb-2 mt-6">
 
-          {/* Logo Section with Animation */}
-          <div className="flex-1 flex items-center justify-center relative">
-            {/* Background glow effect */}
-            <div className="absolute w-80 h-80 bg-[#FCE270]/5 rounded-full blur-3xl"></div>
+            {/* <Bitcoin className="w-10 h-10 sm:w-12 sm:h-12 text-white" /> */}
+            <img src="/Nextlogo-removebg-preview.png" alt="Logo" className="w-21 h-21 sm:w-12 sm:h-12" />
 
-            {/* Animated ring effect */}
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full border-2 border-[#FCE270]/20 animate-ping"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-[#FCE270]/40 animate-pulse"></div>
-              <div
-                className="rounded-full h-64 w-64 flex items-center justify-center 
-                  border-[6px] border-[#FCE270] shadow-[0_0_30px_rgba(252,226,112,0.3)] 
-                  bg-gradient-to-br from-black to-gray-900 relative z-10"
-              >
-                <img
-                  src="/Nextlogo-removebg-preview.png"
-                  alt="CryptoNest Logo"
-                  className="h-48 w-48 object-contain drop-shadow-2xl"
-                />
-              </div>
-            </div>
           </div>
 
-          {/* Bottom Sheet - Mobile App Style */}
-          <div className="bg-gradient-to-t from-[#0a0a0a] to-[#111111] px-6 pt-8 pb-10 rounded-t-3xl shadow-2xl border-t border-[#FCE270]/20">
 
-            {/* Drag indicator */}
-            <div className="flex justify-center mb-6">
-              <div className="w-12 h-1 bg-gray-600 rounded-full"></div>
+
+          <p className="text-lg sm:text-lg md:text-2xl text-gray-400 font-light tracking-wide">
+            Trade Smarter. Trade Faster.
+          </p>
+
+
+        </div>
+
+        {/* Features Grid - 3 Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 w-full max-w-4xl mb-10 sm:mb-16 px-1">
+
+          {/* Feature 1 */}
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700/50 rounded-2xl p-5 sm:p-6 backdrop-blur-sm hover:border-[#FCE270]/50 transition-all duration-300 group">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-yellow-600/30 transition-colors">
+              <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-[#FCE270]" />
             </div>
+            <h3 className="text-base sm:text-lg font-semibold mb-2">Live Trading</h3>
+            <p className="text-xs sm:text-sm text-gray-400">Real-time market data with lightning fast execution</p>
+          </div>
 
-            {/* Title with gradient */}
-            <h1 className="text-3xl font-bold leading-tight">
-              <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                Welcome To
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-[#FCE270] to-[#FCE270]/70 bg-clip-text text-transparent">
-                CryptoNest Token
-              </span>
-            </h1>
-
-            {/* Description */}
-            <p className="text-gray-400 text-sm mt-4 leading-relaxed">
-              Empowering your digital future. Join the next generation of NFT
-              trading in a secure, high-performance ecosystem built for the elite.
-            </p>
-
-            {/* Features List - Mobile Style */}
-            <div className="mt-6 space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#FCE270]/20 flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#FCE270]"></div>
-                </div>
-                <span className="text-gray-300 text-xs">Secure & Decentralized</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#FCE270]/20 flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#FCE270]"></div>
-                </div>
-                <span className="text-gray-300 text-xs">High Performance Trading</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#FCE270]/20 flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#FCE270]"></div>
-                </div>
-                <span className="text-gray-300 text-xs">Elite Community Access</span>
-              </div>
+          {/* Feature 2 */}
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700/50 rounded-2xl p-5 sm:p-6 backdrop-blur-sm hover:border-[#FCE270]/50 transition-all duration-300 group">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-yellow-600/30 transition-colors">
+              <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-[#FCE270]" />
             </div>
+            <h3 className="text-base sm:text-lg font-semibold mb-2">Secure Wallet</h3>
+            <p className="text-xs sm:text-sm text-gray-400">Bank-grade security for your digital assets</p>
+          </div>
 
-            {/* Button Section */}
-            <div className="mt-8">
-              <button
-                onClick={() => navigate("/login")}
-                className="w-full bg-gradient-to-r from-[#FCE270] to-[#FCE270]/80 text-black 
-                  py-4 rounded-2xl text-base font-bold 
-                  shadow-[0_10px_20px_rgba(252,226,112,0.2)] 
-                  hover:shadow-[0_15px_25px_rgba(252,226,112,0.3)]
-                  active:scale-95 transition-all duration-200
-                  flex items-center justify-center gap-2"
-              >
-                <span>Explore Crypto</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </button>
 
-              {/* Footer Text */}
-              <p className="text-center text-gray-600 text-[10px] mt-6">
-                By continuing, you agree to our Terms & Conditions
-              </p>
-            </div>
+        </div>
+
+        {/* Live Crypto Ticker */}
+
+
+        {/* CTA Buttons */}
+        <div className="w-full max-w-sm mx-auto space-y-3 sm:space-y-4">
+          <Link
+            to="/SingUp"
+            className="w-full bg-gradient-to-r from-yellow-600 to-[#FCE270] text-black font-bold py-4 rounded-xl hover:from-yellow-700 hover:to-yellow-500 transform hover:scale-[1.02] transition-all duration-300 shadow-lg shadow-yellow-500/25 flex items-center justify-center gap-2 text-base sm:text-lg"
+          >
+            Get Started
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+
+          <Link
+            to="/Login"
+            className="w-full bg-transparent border border-gray-700 text-gray-300 font-semibold py-4 rounded-xl hover:bg-gray-900 hover:border-gray-600 transition-all duration-300 flex items-center justify-center text-base sm:text-lg"
+          >
+            I already have an account
+          </Link>
+        </div>
+
+        {/* Trust Badge */}
+        <div className="mt-8 sm:mt-12 mb-4 text-center">
+          <div className="flex items-center justify-center gap-2 text-gray-500">
+            {/* <BarChart3 className="w-4 h-4" /> */}
+            <p className="text-xs sm:text-sm">Trusted by 50,000+ active traders worldwide</p>
           </div>
         </div>
 
-        {/* Home Indicator (iPhone style) */}
-        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
-          <div className="w-32 h-1 bg-gray-700 rounded-full"></div>
-        </div>
+
       </div>
     </div>
   );
 };
 
-export default WelcomeCard;
+export default WelcomeScreen;

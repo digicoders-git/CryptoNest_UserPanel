@@ -124,7 +124,7 @@ export default function MainDashBord() {
     { to: "/dashbord/history", label: "Transaction History", icon: <RiHistoryLine /> },
     { to: "/dashbord/notifications", label: "CryptoNest Alerts", icon: <RiNotification3Line /> },
     { to: "/dashbord/contact-us", label: "Support Concierge", icon: <FiHeadphones /> },
-    { to: "/dashbord/package-upgrade", label: "Upgrade Limit", icon: <MdUpgrade /> },
+    // { to: "/dashbord/package-upgrade", label: "Upgrade Limit", icon: <MdUpgrade /> },
     { to: "/dashbord/nft-history", label: "CryptoNest History", icon: <RiHistoryLine /> },
     { to: "/dashbord/mlm-tree", label: "Alliance Matrix", icon: <HiOutlineUsers /> },
     { to: "/dashbord/my-sold-nfts", label: "Sale Crypto", icon: <MdOutlineSell /> },

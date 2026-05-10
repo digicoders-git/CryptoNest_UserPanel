@@ -829,7 +829,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Password *</label>
+                <label className="text-[9px] text-white font-black font-semibold uppercase tracking-widest">Password *</label>
                 <div className="relative">
                   <input type={showPassword ? 'text' : 'password'} name="password" placeholder="••••••••" onChange={handleChange} required
                     className="w-full bg-black/40 border border-white/5 rounded-xl py-3.5 px-4 pr-12 text-sm text-white placeholder-gray-700 focus:border-[#FCE270]/30 transition-all outline-none" />
@@ -841,7 +841,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Confirm Password *</label>
+                <label className="text-[9px] text-white font-black font-semibolduppercase tracking-widest">Confirm Password *</label>
                 <div className="relative">
                   <input type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" placeholder="••••••••" onChange={handleChange} required
                     className="w-full bg-black/40 border border-white/5 rounded-xl py-3.5 px-4 pr-12 text-sm text-white placeholder-gray-700 focus:border-[#FCE270]/30 transition-all outline-none" />
