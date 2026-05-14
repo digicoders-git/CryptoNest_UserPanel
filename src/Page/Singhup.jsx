@@ -265,11 +265,8 @@ const Signup = () => {
       const result = await response.json();
       if (result.success && result.data && result.data.length > 0) {
         const notification = result.data[0];
-        const formattedMessage = notification.message.split('\n').map(line => {
-          if (line.trim().startsWith('👉')) return `<li style="font-size: 12px; color: #374151;">${line.trim()}</li>`;
-          else if (line.trim()) return `<p style="font-size: 12px; color: #374151; margin-bottom: 12px; line-height: 1.6;">${line.trim()}</p>`;
-          return '';
-        }).join('');
+        // Directly render ReactQuill rich text HTML output
+        const htmlContent = notification.message;
 
         setTimeout(() => {
           Swal.fire({
@@ -277,7 +274,7 @@ const Signup = () => {
                       <span style="color: #FCE270; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em;">Official Dispatch</span>
                       <strong style="color: #fff; font-size: 18px; font-weight: 900; letter-spacing: -0.01em;">${notification.title}</strong>
                     </div>`,
-            html: `<div style="text-align: left; line-height: 1.8; color: #ccc; font-family: sans-serif; font-size: 13px; padding: 10px 5px;">${formattedMessage}</div>`,
+            html: `<div class="rich-text-content" style="text-align: left; line-height: 1.8; color: #E5E7EB; font-family: sans-serif; font-size: 13px; padding: 10px 5px;">${htmlContent}</div>`,
             background: "#111111",
             confirmButtonColor: "#FCE270",
             confirmButtonText: `<span style="color: black; font-weight: 900; font-size: 11px; letter-spacing: 0.1em;">ACKNOWLEDGE PROTOCOL</span>`,

@@ -143,8 +143,8 @@ const MyNFTs = ({ onBack }) => {
              <p style="font-size: 10px; font-weight: 900; color: #888; text-transform: uppercase; margin-bottom: 12px;">SPLIT DETAILS</p>
              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 11px; color: #aaa;">
                <div style="display: flex; justify-content: space-between;"><span>You</span><span style="color:#fff;">$${(nft.sellPrice * 0.7).toFixed(2)}</span></div>
-               <div style="display: flex; justify-content: space-between;"><span>Company (20%)</span><span>$${(nft.sellPrice * 0.2).toFixed(2)}</span></div>
-               <div style="display: flex; justify-content: space-between;"><span>Bonus (10%)</span><span>$${(nft.sellPrice * 0.1).toFixed(2)}</span></div>
+               <div style="display: flex; justify-content: space-between;"><span>Company (10%)</span><span>$${(nft.sellPrice * 0.1).toFixed(2)}</span></div>
+               <div style="display: flex; justify-content: space-between;"><span>Bonus (20%)</span><span>$${(nft.sellPrice * 0.2).toFixed(2)}</span></div>
              </div>
           </div>
         </div>

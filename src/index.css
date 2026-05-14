@@ -42,3 +42,51 @@ body.swal2-shown {
   overflow: auto !important;
   padding-right: 0 !important;
 }
+
+/* Premium rich text formatting for SweetAlert popup notices */
+.rich-text-content {
+  color: #E5E7EB;
+}
+.rich-text-content p {
+  margin-bottom: 0.75rem;
+}
+.rich-text-content p:last-child {
+  margin-bottom: 0;
+}
+.rich-text-content strong,
+.rich-text-content b {
+  color: #FFFFFF;
+  font-weight: 800;
+}
+.rich-text-content em,
+.rich-text-content i {
+  font-style: italic;
+  color: #FCE270;
+}
+.rich-text-content u {
+  text-decoration: underline;
+  text-decoration-color: #FCE270;
+}
+.rich-text-content h1,
+.rich-text-content h2,
+.rich-text-content h3 {
+  color: #FCE270;
+  font-weight: 800;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.rich-text-content ul,
+.rich-text-content ol {
+  padding-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.rich-text-content ul {
+  list-style-type: disc;
+}
+.rich-text-content ol {
+  list-style-type: decimal;
+}
+.rich-text-content li {
+  margin-bottom: 0.25rem;
+  color: #D1D5DB;
+}

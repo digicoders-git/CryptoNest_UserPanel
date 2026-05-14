@@ -395,10 +395,7 @@ const WalletStatus = () => {
               <FaEthereum className="text-blue-500 text-lg" />
               <span>MetaMask</span>
             </div>
-            <div className="flex items-center gap-2 group-hover:text-gray-300 transition-colors">
-              <FaMobile className="text-blue-400 text-lg" />
-              <span>TrustWallet</span>
-            </div>
+
           </div>
         </div>
       </div>
@@ -431,10 +428,7 @@ const WalletStatus = () => {
             <FaEthereum className="text-blue-500 text-lg" />
             <span>MetaMask</span>
           </div>
-          <div className="flex items-center gap-2">
-            <FaMobile className="text-blue-400 text-lg" />
-            <span>TrustWallet</span>
-          </div>
+
         </div>
       </div>
     </div>

@@ -263,19 +263,13 @@ const Dashboard = ({ onBack }) => {
 
       if (result.success && result.data && result.data.length > 0) {
         const notification = result.data[0];
-        const formattedMessage = notification.message
-          .split('\n')
-          .map(line => {
-            if (line.trim().startsWith('👉')) return `<li style="font-size: 13px; color: #CCCCCC; margin-bottom: 8px;">${line.trim()}</li>`;
-            else if (line.trim()) return `<p style="font-size: 13px; color: #FFFFFF; margin-bottom: 12px; line-height: 1.6;">${line.trim()}</p>`;
-            return '';
-          })
-          .join('');
+        // Directly render ReactQuill rich text HTML output
+        const htmlContent = notification.message;
 
         setTimeout(() => {
           Swal.fire({
             title: `<strong style="color: #FCE270; font-size: 20px;">${notification.title}</strong>`,
-            html: `<div style="text-align: left; line-height: 1.6; padding: 10px;">${formattedMessage}</div>`,
+            html: `<div class="rich-text-content" style="text-align: left; line-height: 1.6; padding: 10px; color: #E5E7EB; font-size: 14px;">${htmlContent}</div>`,
             background: '#1A1A1A',
             color: '#FFFFFF',
             confirmButtonColor: '#FCE270',
