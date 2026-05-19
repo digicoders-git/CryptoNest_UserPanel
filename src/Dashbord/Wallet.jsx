@@ -743,7 +743,7 @@ const Wallet = () => {
   };
 
   return (
-    <div className="space-y-5 pb-16 px-2 bg-black min-h-screen font-sans pt-3">
+    <div className="space-y-5 pb-36 px-2 bg-black min-h-screen font-sans pt-3">
       {/* Simple Header */}
 
 
