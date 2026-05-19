@@ -297,9 +297,10 @@ const Notifications = ({ onBack }) => {
                     </div>
 
                     {/* Message */}
-                    <p className="text-[12px] font-bold text-gray-400 leading-relaxed mb-4 ml-[52px]">
-                      {notification.message}
-                    </p>
+                    <div
+                      className="text-[12px] font-bold text-gray-400 leading-relaxed mb-4 ml-[52px] rich-text-content"
+                      dangerouslySetInnerHTML={{ __html: notification.message }}
+                    />
 
                     {/* Footer */}
                     <div className="flex items-center justify-between pt-4 border-t border-white/5 ml-[52px]">
