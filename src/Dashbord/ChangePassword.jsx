@@ -10,9 +10,9 @@ import {
   RiShieldFlashLine, RiCheckLine, RiCloseLine,
   RiInformationLine, RiAlertLine, RiSecurePaymentLine,
 } from 'react-icons/ri';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import useAuthCheck from '../utils/useAuthCheck';
+import api from '../services/api';
 
 const ChangePassword = ({ onBack }) => {
   const token = useAuthCheck();
@@ -96,16 +96,7 @@ const ChangePassword = ({ onBack }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        'https://api.gtnworld.live/api/user/change-password',
-        { newPassword },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      const response = await api.post('/user/change-password', { newPassword });
 
       if (response.data.success) {
         Swal.fire({

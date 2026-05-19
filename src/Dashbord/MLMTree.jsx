@@ -56,23 +56,34 @@ const MLMTree = ({ onBack }) => {
       const treeRes = await userAPI.getMLMTree();
       const earningsRes = await userAPI.getMLMEarnings();
 
-      const treeData = treeRes.data.tree || {};
-      const earningsData = earningsRes.data || {};
+      const treeData = treeRes.data.tree || treeRes.data || {};
+
+      // Handle multiple possible response structures from backend
+      const earningsRaw = earningsRes.data;
+      const earningsArray =
+        earningsRaw?.earnings ||
+        earningsRaw?.data?.earnings ||
+        earningsRaw?.levels ||
+        earningsRaw?.data ||
+        [];
+
+      const finalEarnings = Array.isArray(earningsArray) ? earningsArray : [];
 
       setTreeData(treeData);
-      setEarnings(earningsData.earnings || []);
+      setEarnings(finalEarnings);
 
-      const totalEarnings = earningsData.totalEarnings || 0;
+      console.log('✅ MLM Earnings Data:', finalEarnings);
+
       const directReferrals = treeData.directReferrals || [];
-      const calculatedEarnings = (earningsData.earnings || []).reduce((sum, e) => sum + (e.amount || 0), 0);
-      const finalTotalEarnings = totalEarnings > 0 ? totalEarnings : calculatedEarnings;
+      const calculatedEarnings = finalEarnings.reduce((sum, e) => sum + (e.amount || 0), 0);
+      const totalEarnings = earningsRaw?.totalEarnings || earningsRaw?.data?.totalEarnings || calculatedEarnings;
 
       setStats({
         totalReferrals: directReferrals.length,
         activeReferrals: directReferrals.filter(m => m.isActive).length,
-        totalEarnings: finalTotalEarnings,
-        missedEarnings: earningsData.missedEarnings || 0,
-        referralCode: treeData.user?.referralCode || earningsData.referralCode || ''
+        totalEarnings,
+        missedEarnings: earningsRaw?.missedEarnings || 0,
+        referralCode: treeData.user?.referralCode || earningsRaw?.referralCode || ''
       });
 
     } catch (error) {

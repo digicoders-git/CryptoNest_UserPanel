@@ -2,14 +2,10 @@ import React, { useState, useEffect } from "react";
 import {
   FaWallet,
   FaPlus,
-  FaMinus,
-  FaHistory,
-  FaCoins,
   FaArrowUp,
-  FaArrowDown,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { walletAPI, userAPI, demoAPI } from "../services/api";
+import { walletAPI, demoAPI } from "../services/api";
 import WalletStatus from "../Componect/WalletStatus";
 import realWalletService from "../services/realWalletService";
 import bnbTokenUtils from "../utils/bnbTokenUtils";
@@ -18,13 +14,11 @@ import envConfig from "../config/environment";
 const Wallet = () => {
   const [balance, setBalance] = useState(0);
   const [profit, setProfit] = useState(0);
-  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchBalance();
     fetchProfit();
-    fetchTransactions();
 
     // Listen for balance updates from other components
     const handleBalanceUpdate = (event) => {
@@ -59,25 +53,6 @@ const Wallet = () => {
     } catch (error) {
       console.error("Error fetching profit:", error);
       setProfit(0);
-    }
-  };
-
-  const fetchTransactions = async () => {
-    try {
-      // Use same API as History page
-      const response = await userAPI.getTransactions();
-      const apiTransactions = response.data.transactions || [];
-
-      // Sort by date (newest first) and take only 5 recent transactions
-      const recentTransactions = apiTransactions
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 5);
-
-      setTransactions(recentTransactions);
-      console.log("✅ Recent transactions loaded:", recentTransactions.length);
-    } catch (error) {
-      console.error("❌ Error fetching transactions:", error);
-      setTransactions([]);
     }
   };
 
@@ -449,7 +424,6 @@ const Wallet = () => {
 
         // Refresh data
         fetchBalance();
-        fetchTransactions();
       }
     } catch (error) {
       console.error("❌ Payment processing failed:", error);
@@ -689,7 +663,6 @@ const Wallet = () => {
 
         fetchBalance();
         fetchProfit();
-        fetchTransactions();
 
       } catch (error) {
         console.error('❌ Withdrawal error:', error);
@@ -810,54 +783,7 @@ const Wallet = () => {
         </button>
       </div>
 
-      {/* Simple Transaction List */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between px-1">
-          <h3 className="font-semibold text-[14px] text-gray-300 tracking-wide">Recent Activity</h3>
-          <button onClick={fetchTransactions} className="text-[#FCE270] text-[12px] font-semibold">Refresh</button>
-        </div>
 
-        <div className="bg-[#1A1A1A] rounded-[24px] border border-white/5 p-2 space-y-1">
-          {transactions.length > 0 ? (
-            transactions.slice(0, 5).map((transaction, index) => {
-              const isMoneyAdded =
-                transaction.type === "credit" ||
-                transaction.type === "add" ||
-                transaction.description?.toLowerCase().includes("added") ||
-                transaction.description?.toLowerCase().includes("deposit");
-
-              return (
-                <div key={index} className="flex items-center justify-between p-3.5 hover:bg-white/[0.02] rounded-xl transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${isMoneyAdded ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
-                      }`}>
-                      {isMoneyAdded ? <FaPlus size={12} /> : <FaMinus size={12} />}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[13px] font-bold text-gray-200 truncate max-w-[120px]">
-                        {transaction.description || 'Transaction'}
-                      </p>
-                      <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">
-                        {new Date(transaction.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className={`text-[15px] font-black tracking-tight ${isMoneyAdded ? 'text-green-500' : 'text-red-500'
-                      }`}>
-                      {isMoneyAdded ? '+' : '-'}${transaction.amount.toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="py-10 text-center">
-              <p className="text-gray-600 text-[10px] font-black uppercase tracking-widest">No activity</p>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 };

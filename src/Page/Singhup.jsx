@@ -62,6 +62,7 @@ const Signup = () => {
     message: "",
   });
   const [mobileError, setMobileError] = useState("");
+  const [mobileChecking, setMobileChecking] = useState(false);
   const [showAddMoneyButton, setShowAddMoneyButton] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -706,28 +707,58 @@ const Signup = () => {
               {/* Mobile */}
               <div className="space-y-1.5">
                 <label className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Mobile Number *</label>
-                <PhoneInput country="in" enableSearch value={formData.mobile}
-                  onChange={(value, country) => setFormData(prev => ({ ...prev, mobile: value, country: country.countryCode.toUpperCase() }))}
-                  isValid={(value, country) => {
-                    if (!value) { setMobileError("Mobile number is required"); return false; }
-                    const phone = parsePhoneNumberFromString(`+${value}`, country.countryCode.toUpperCase());
-                    if (!phone || !phone.isValid()) { setMobileError("Please enter a valid mobile number"); return false; }
-                    setMobileError(""); return true;
-                  }}
-                  inputStyle={{ width: "100%", height: "50px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "12px", border: mobileError ? "1px solid rgba(248,113,113,0.5)" : "1px solid rgba(255,255,255,0.05)", fontSize: "14px", color: "white", paddingLeft: "52px" }}
-                  buttonStyle={{ border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px 0 0 12px", backgroundColor: "transparent" }}
-                  dropdownStyle={{ backgroundColor: "#1A1A1A", color: "white", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)" }}
-                />
-                {mobileError && <p className="text-[8px] font-black text-red-500 uppercase tracking-widest mt-1">{mobileError}</p>}
+                <div className="relative">
+                  <PhoneInput country="in" enableSearch value={formData.mobile}
+                    onChange={(value, country) => {
+                      setMobileChecking(true);
+                      setMobileError("");
+                      setFormData(prev => ({ ...prev, mobile: value, country: country.countryCode.toUpperCase() }));
+                      setTimeout(() => {
+                        const phone = parsePhoneNumberFromString(`+${value}`, country.countryCode.toUpperCase());
+                        if (!value) setMobileError("Mobile number is required");
+                        else if (!phone || !phone.isValid()) setMobileError("Please enter a valid mobile number");
+                        else setMobileError("");
+                        setMobileChecking(false);
+                      }, 600);
+                    }}
+                    isValid={() => true}
+                    inputStyle={{ width: "100%", height: "50px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "12px", border: mobileError ? "1px solid rgba(248,113,113,0.5)" : "1px solid rgba(255,255,255,0.05)", fontSize: "14px", color: "white", paddingLeft: "52px" }}
+                    buttonStyle={{ border: "1px solid rgba(255,255,255,0.05)", borderRadius: "12px 0 0 12px", backgroundColor: "transparent" }}
+                    dropdownStyle={{ backgroundColor: "#1A1A1A", color: "white", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)" }}
+                  />
+                  {/* Loader / tick / cross inside input */}
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    {mobileChecking ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#FCE270] border-t-transparent" />
+                    ) : formData.mobile && !mobileError ? (
+                      <span className="text-green-400 text-sm">✓</span>
+                    ) : formData.mobile && mobileError ? (
+                      <span className="text-red-400 text-sm">✗</span>
+                    ) : null}
+                  </div>
+                </div>
+                {!mobileChecking && mobileError && (
+                  <p className="text-[8px] font-black text-red-500 uppercase tracking-widest mt-1">{mobileError}</p>
+                )}
               </div>
 
               {/* Referral */}
               <div className="space-y-1.5">
                 <label className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Referral Code *</label>
-                <input type="text" name="referralCode" placeholder="Enter code" value={formData.referralCode} onChange={handleChange} readOnly={isReferralLocked}
-                  className={`w-full bg-black/40 border rounded-xl py-3.5 px-4 text-sm text-white placeholder-gray-700 focus:border-[#FCE270]/30 transition-all outline-none ${isReferralLocked ? 'opacity-50 cursor-not-allowed' : ''} ${referralStatus.valid === true ? 'border-green-500/50' : referralStatus.valid === false ? 'border-red-500/50' : 'border-white/5'
-                    }`} />
-                {referralStatus.checking && <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mt-1">Checking...</p>}
+                <div className="relative">
+                  <input type="text" name="referralCode" placeholder="Enter code" value={formData.referralCode} onChange={handleChange} readOnly={isReferralLocked}
+                    className={`w-full bg-black/40 border rounded-xl py-3.5 px-4 pr-12 text-sm text-white placeholder-gray-700 focus:border-[#FCE270]/30 transition-all outline-none ${isReferralLocked ? 'opacity-50 cursor-not-allowed' : ''} ${referralStatus.valid === true ? 'border-green-500/50' : referralStatus.valid === false ? 'border-red-500/50' : 'border-white/5'}`} />
+                  {/* Loader inside input */}
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    {referralStatus.checking ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#FCE270] border-t-transparent" />
+                    ) : referralStatus.valid === true ? (
+                      <span className="text-green-400 text-sm">✓</span>
+                    ) : referralStatus.valid === false ? (
+                      <span className="text-red-400 text-sm">✗</span>
+                    ) : null}
+                  </div>
+                </div>
                 {!referralStatus.checking && referralStatus.message && (
                   <p className={`text-[8px] font-black uppercase tracking-widest mt-1 ${referralStatus.valid ? 'text-green-500' : 'text-red-500'}`}>
                     {referralStatus.message}

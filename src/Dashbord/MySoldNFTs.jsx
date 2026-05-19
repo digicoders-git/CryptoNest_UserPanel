@@ -8,10 +8,10 @@ import {
   RiHistoryLine, RiMoneyDollarCircleLine, RiTimeLine, RiStackLine,
   RiCheckboxCircleLine, RiNotification3Line, RiRefreshLine,
   RiFileList3Line, RiFundsLine, RiBarChart2Line, RiCheckLine,
-  RiAuctionLine, RiInboxArchiveLine,
+  RiAuctionLine, RiInboxArchiveLine, RiArrowDownSLine,
 } from 'react-icons/ri';
-import axios from 'axios';
 import useAuthCheck from '../utils/useAuthCheck';
+import { nftAPI } from '../services/api';
 
 const MySoldNFTs = ({ onBack }) => {
   const token = useAuthCheck();
@@ -57,21 +57,14 @@ const MySoldNFTs = ({ onBack }) => {
 
   const fetchSoldNFTs = async () => {
     try {
-      const userEmail = localStorage.getItem('userEmail');
-      if (!userEmail) {
-        setLoading(false);
-        return;
-      }
-
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const response = await axios.get(
-        `${API_URL}/api/nft-transactions/marketplace/${userEmail}`
+      const response = await nftAPI.getMyNFTs();
+      const allNfts = response.data.nfts || [];
+      // Show only listed/sold NFTs
+      const listedNfts = allNfts.filter(n =>
+        n.holdStatus === 'sell' || n.status === 'listed' || n.status === 'sold'
       );
-
-      if (response.data.success) {
-        setUser(response.data.data.user);
-        setNfts(response.data.data.marketplaceNFTs);
-      }
+      setNfts(listedNfts);
+      setUser(response.data.user || {});
     } catch (error) {
       console.error('❌ Error fetching sold NFTs:', error);
     } finally {
@@ -378,8 +371,5 @@ const MySoldNFTs = ({ onBack }) => {
     </div>
   );
 };
-
-// Need to add this import at top
-import { RiArrowDownSLine } from 'react-icons/ri';
 
 export default MySoldNFTs;
