@@ -323,7 +323,7 @@ const Profile = ({ onBack }) => {
           </div>
           {[
             { icon: <FaBell />, label: 'Notifications', right: 'On', onClick: () => navigate('/dashbord/notifications') },
-            { icon: <FaFingerprint />, label: 'Security', right: <FaChevronRight size={12} /> },
+            { icon: <FaFingerprint />, label: 'Change Password', right: <FaChevronRight size={12} />, onClick: () => navigate('/dashbord/change-password') },
             { icon: <FaHeadset />, label: 'Help & Support', right: <FaChevronRight size={12} />, onClick: () => navigate('/dashbord/contact-us') },
             { icon: <FaSignOutAlt />, label: 'Logout', right: <FaChevronRight size={12} />, danger: true, onClick: () => { localStorage.clear(); navigate('/Login'); } },
           ].map((item, i) => (
