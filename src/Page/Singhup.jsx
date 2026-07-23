@@ -797,7 +797,7 @@ const Signup = () => {
                       {formData.selectedPlan === plan && <FaCheckCircle size={10} className="text-black" />}
                     </div>
                   </div>
-                  <p className="text-[24px] font-black text-white">${plan === 'premium' ? '20' : '15'}</p>
+                  <p className="text-[24px] font-black text-white">${plan === 'premium' ? '0.2' : '0.1'}</p>
                   <div className="flex gap-2 mt-2">
                     {(plan === 'premium' ? ['Unlimited', 'Global Pool', 'VIP Support'] : ['$500 Limit', 'Basic Pool', 'Standard']).map((f, i) => (
                       <span key={i} className="text-[8px] text-gray-500 font-black uppercase bg-white/5 px-2 py-1 rounded-lg">{f}</span>
@@ -885,7 +885,7 @@ const Signup = () => {
             <div className="bg-black/30 rounded-xl p-4 border border-white/5 space-y-2">
               <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">Order Summary</p>
               {/* <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Plan</span><span className="text-white uppercase">{formData.selectedPlan}</span></div> */}
-              <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Amount</span><span className="text-[#FCE270] font-black">${formData.selectedPlan === 'premium' ? '20' : '15'}</span></div>
+              <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Amount</span><span className="text-[#FCE270] font-black">${formData.selectedPlan === 'premium' ? '0.2' : '0.1'}</span></div>
               <div className="flex justify-between text-[11px] font-bold"><span className="text-gray-400">Wallet</span><span className="text-green-400 text-[9px]">{connectedWallet ? 'Connected' : 'Not connected'}</span></div>
             </div>
 
@@ -896,7 +896,7 @@ const Signup = () => {
               </button>
               <button type="submit" disabled={loading}
                 className="flex-1 bg-[#FCE270] text-black h-13 rounded-2xl font-black text-[12px] uppercase tracking-widest active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-[#FCE270]/20">
-                {loading ? 'Processing...' : `Register $${formData.selectedPlan === 'premium' ? '20' : '15'}`}
+                {loading ? 'Processing...' : `Register $${formData.selectedPlan === 'premium' ? '0.2' : '0.1'}`}
               </button>
             </div>
 
