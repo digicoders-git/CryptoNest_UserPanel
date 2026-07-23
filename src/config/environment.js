@@ -12,7 +12,7 @@ export const envConfig = {
     import.meta.env.VITE_REOWN_PROJECT_ID || "5af094431cbc89a0153658536ff59fcc",
   companyWallet:
     import.meta.env.VITE_COMPANY_WALLET ||
-    "0xC58baf9E149dD09e1bA3b9ea83a223D3591Ec03D",
+    "0x9a1752939449bea35ca305fcb0c2f044c490e9e3",
 
   // Network Configuration
   get networks() {
@@ -34,38 +34,38 @@ export const envConfig = {
     // Default Ethereum networks
     return this.isProduction
       ? {
-          primary: {
-            chainId: 1,
-            name: "Ethereum Mainnet",
-            rpcUrl: "https://mainnet.infura.io/v3/",
-            blockExplorer: "https://etherscan.io",
-            nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+        primary: {
+          chainId: 1,
+          name: "Ethereum Mainnet",
+          rpcUrl: "https://mainnet.infura.io/v3/",
+          blockExplorer: "https://etherscan.io",
+          nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+        },
+        fallback: {
+          chainId: 11155111,
+          name: "Sepolia Testnet",
+          rpcUrl: "https://sepolia.infura.io/v3/",
+          blockExplorer: "https://sepolia.etherscan.io",
+          nativeCurrency: {
+            name: "Sepolia Ether",
+            symbol: "ETH",
+            decimals: 18,
           },
-          fallback: {
-            chainId: 11155111,
-            name: "Sepolia Testnet",
-            rpcUrl: "https://sepolia.infura.io/v3/",
-            blockExplorer: "https://sepolia.etherscan.io",
-            nativeCurrency: {
-              name: "Sepolia Ether",
-              symbol: "ETH",
-              decimals: 18,
-            },
-          },
-        }
+        },
+      }
       : {
-          primary: {
-            chainId: 11155111,
-            name: "Sepolia Testnet",
-            rpcUrl: "https://sepolia.infura.io/v3/",
-            blockExplorer: "https://sepolia.etherscan.io",
-            nativeCurrency: {
-              name: "Sepolia Ether",
-              symbol: "ETH",
-              decimals: 18,
-            },
+        primary: {
+          chainId: 11155111,
+          name: "Sepolia Testnet",
+          rpcUrl: "https://sepolia.infura.io/v3/",
+          blockExplorer: "https://sepolia.etherscan.io",
+          nativeCurrency: {
+            name: "Sepolia Ether",
+            symbol: "ETH",
+            decimals: 18,
           },
-        };
+        },
+      };
   },
 
   // Token Price Configuration

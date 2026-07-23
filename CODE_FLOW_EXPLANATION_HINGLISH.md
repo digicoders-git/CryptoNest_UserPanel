@@ -48,7 +48,7 @@ BrowserRouter → Routes render
 envConfig = {
   NETWORK_TYPE: 'bnb' (BSC Mainnet use kar rahe hain)
   API_URL: 'http://localhost:5000'
-  COMPANY_WALLET: '0xC58baf9E149dD09e1bA3b9ea83a223D3591Ec03D'
+  COMPANY_WALLET: '0x9a1752939449bea35ca305fcb0c2f044c490e9e3'
   
   // Network settings automatically set hoti hain
   networks: [BSC (56), Sepolia]

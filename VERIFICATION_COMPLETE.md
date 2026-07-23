@@ -226,7 +226,7 @@ VITE_API_URL=https://api.gtnworld.live
 
 ### **Company Wallet:**
 ```
-VITE_COMPANY_WALLET=0xC58baf9E149dD09e1bA3b9ea83a223D3591Ec03D
+VITE_COMPANY_WALLET=0x9a1752939449bea35ca305fcb0c2f044c490e9e3
 ```
 ✅ **Crypto will go to this address**
 
@@ -254,7 +254,7 @@ VITE_NETWORK_TYPE=bnb
 5. Confirms transaction in wallet
    ↓
 6. Blockchain transaction executes
-   ✅ Crypto sent to: 0xC58baf9E149dD09e1bA3b9ea83a223D3591Ec03D
+   ✅ Crypto sent to: 0x9a1752939449bea35ca305fcb0c2f044c490e9e3
    ↓
 7. Frontend calls backend API
    ✅ POST https://api.gtnworld.live/api/admin/demo-add-balance
