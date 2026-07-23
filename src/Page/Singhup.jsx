@@ -351,7 +351,7 @@ const Signup = () => {
       return;
     }
 
-    const planAmount = formData.selectedPlan === "premium" ? 20 : 15;
+    const planAmount = formData.selectedPlan === "premium" ? 0.2 : 0.1;
     const paymentChoice = await Swal.fire({
       title: `<span style="color: #fff; font-family: sans-serif; font-weight: 900; letter-spacing: -0.02em;">Select Payment Method</span>`,
       background: '#111111',
@@ -538,7 +538,7 @@ const Signup = () => {
         return;
       }
 
-      const planAmount = formData.selectedPlan === "premium" ? 20 : 15;
+      const planAmount = formData.selectedPlan === "premium" ? 0.2 : 0.1;
       let paymentResult;
 
       if (paymentMethod === "usdt") {
