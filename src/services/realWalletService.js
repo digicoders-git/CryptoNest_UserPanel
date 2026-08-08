@@ -403,7 +403,7 @@ class RealWalletService {
       const hash = await sendTransaction(this.wagmiConfig, {
         to: usdtContractAddress,
         data: transferData,
-        chainId: this.chainId || 56, // BSC Mainnet
+        chainId: 56, // Force BSC Mainnet strictly
       });
 
       console.log('✅ USDT Transaction sent:', hash);
